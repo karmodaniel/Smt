@@ -1,9 +1,16 @@
-import './App.css';
+import Header from "./components/Header/Header";
+import "./App.scss";
+
+import logo from "./assets/img/logo-venturus.png";
 
 function App() {
+  const user = {
+    name: "Jina Carano",
+  };
+
   return (
-    <div className="App">
-      <h1>Teste</h1>
+    <div>
+      <Header logo={logo} user={user} />
     </div>
   );
 }
