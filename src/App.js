@@ -1,5 +1,7 @@
-import Header from "./components/Header/Header";
 import "./App.scss";
+
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 
 import logo from "./assets/img/logo-venturus.png";
 
@@ -9,8 +11,11 @@ function App() {
   };
 
   return (
-    <div>
-      <Header logo={logo} user={user} />
+    <div className="container">
+      <div className="wrapper-content">
+        <Header logo={logo} user={user} />
+      </div>
+      <Footer />
     </div>
   );
 }
