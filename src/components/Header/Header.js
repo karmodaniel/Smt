@@ -13,7 +13,7 @@ export default function Header(props) {
       <div className="wrapper">
         <section className="company-logo">
           <div>
-            <img src={props.logo} className="logo"></img>
+            <img src={props.logo} alt="Venturus logo" className="logo"></img>
           </div>
           <div className="app-name">
             <h1>Squand Management Tool</h1>
