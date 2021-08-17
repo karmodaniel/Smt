@@ -1,7 +1,8 @@
 import React from "react";
-import MyTeams from "../../components/MyTeams/MyTeams";
+import TableComponent from "../../components/TableComponent/TableComponent";
 import "./Home.scss";
 import "../../App.scss";
+import CardComponent from "../../components/CardComponent/CardComponent";
 
 export default function Home() {
   const teams = [
@@ -18,7 +19,11 @@ export default function Home() {
   return (
     <div className="container">
       <div className="wrapper-content">
-        <MyTeams teams={teams} />
+        <section className="teste">
+          <CardComponent title="My teams" action={true}>
+            <TableComponent teams={teams} />
+          </CardComponent>
+        </section>
       </div>
     </div>
   );
