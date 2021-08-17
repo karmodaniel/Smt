@@ -1,32 +1,25 @@
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.scss";
-
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import MyTeams from "./components/MyTeams/MyTeams";
-
-import logo from "./assets/img/logo-venturus.png";
+import Home from "./pages/Home/Home ";
+import ManageTeam from "./pages/ManageTeam/ManageTeam";
 
 function App() {
-  const user = {
-    name: "Jina Carano",
-  };
-
-  const teams = [{
-    name: "Barcelona",
-    description: "Barcelona Squad"
-  },
-  {
-    name: "Cluble de Regatas Flamengo",
-    description: "Flamengo Squad"
-  }];
-
   return (
-    <div className="container">
-      <div className="wrapper-content">
-        <Header logo={logo} user={user} />
-        <MyTeams teams={teams} />
+    <div className="App">
+      <div className="container">
+        <div className="wrapper-content">
+          <Router>
+            <Header />
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/manage-team" component={ManageTeam} />
+            </Switch>
+            <Footer />
+          </Router>
+        </div>
       </div>
-      <Footer />
     </div>
   );
 }

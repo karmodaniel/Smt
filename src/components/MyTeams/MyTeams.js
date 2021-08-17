@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/utilities/_variables.scss";
+import { Link } from 'react-router-dom';
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import {
   withStyles,
@@ -24,7 +25,7 @@ export default function MyTeams(props) {
 
   useEffect(() => {
      setTeams(props.teams);
-  }, []);
+  }, [props]);
 
   const StyledTableCell = withStyles(() => ({
     head: {
@@ -110,6 +111,7 @@ export default function MyTeams(props) {
           className={classes.cardHeader}
           title={<Typography className={classes.title}> My teams </Typography>}
           action={
+            <Link to="/manage-team">
             <IconButton aria-label="settings">
               <svg width={0} height={0}>
                 <linearGradient
@@ -125,6 +127,7 @@ export default function MyTeams(props) {
               </svg>
               <AddBoxIcon className={classes.addIcon} />
             </IconButton>
+            </Link>
           }
         />
         <Divider />
