@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/utilities/_variables.scss";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import {
   withStyles,
@@ -24,13 +24,13 @@ export default function MyTeams(props) {
   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
-     setTeams(props.teams);
+    setTeams(props.teams);
   }, [props]);
 
   const StyledTableCell = withStyles(() => ({
     head: {
       backgroundColor: "$white",
-      color: "$black",   
+      color: "$black",
 
       "&:nth-of-type(1)": {
         width: "30%",
@@ -70,11 +70,11 @@ export default function MyTeams(props) {
       },
       "&:hover th": {
         borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10
+        borderBottomLeftRadius: 10,
       },
       "&:hover td": {
         borderTopRightRadius: 10,
-        borderBottomRightRadius: 10
+        borderBottomRightRadius: 10,
       },
     },
     card: {
@@ -112,21 +112,21 @@ export default function MyTeams(props) {
           title={<Typography className={classes.title}> My teams </Typography>}
           action={
             <Link to="/manage-team">
-            <IconButton aria-label="settings">
-              <svg width={0} height={0}>
-                <linearGradient
-                  id="linearColors"
-                  x1="0%"
-                  y1="0%"
-                  x2="0%"
-                  y2="100%"
-                >
-                  <stop offset={0} stopColor="#A7397B" />
-                  <stop offset={1} stopColor="#843381" />
-                </linearGradient>
-              </svg>
-              <AddBoxIcon className={classes.addIcon} />
-            </IconButton>
+              <IconButton aria-label="settings">
+                <svg width={0} height={0}>
+                  <linearGradient
+                    id="linearColors"
+                    x1="0%"
+                    y1="0%"
+                    x2="0%"
+                    y2="100%"
+                  >
+                    <stop offset={0} stopColor="#A7397B" />
+                    <stop offset={1} stopColor="#843381" />
+                  </linearGradient>
+                </svg>
+                <AddBoxIcon className={classes.addIcon} />
+              </IconButton>
             </Link>
           }
         />
