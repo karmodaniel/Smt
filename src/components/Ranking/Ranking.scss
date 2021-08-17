@@ -1,0 +1,40 @@
+.ranking-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.ranking-container {
+  max-width: 100%;
+  background-color: #e9e3e8;
+  padding: 6px;
+  border-radius: 15px;
+
+  .ranking {
+    background-color: #fff;
+    padding: 15px 25px;
+    border-radius: 10px;
+  }
+
+  .ranking:not(:nth-child(1)) {
+    margin-top: 6px;
+  }
+
+  .biggest {
+    border: 1px solid #c81e4b;
+  }
+
+  .ranking-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .ranking-team {
+      font-size: 20px;
+    }
+
+    .ranking-avg {
+      font-weight: 700;
+    }
+  }
+}

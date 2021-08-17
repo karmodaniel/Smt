@@ -16,9 +16,9 @@ function App() {
               <Route path="/" exact component={Home} />
               <Route path="/manage-team" component={ManageTeam} />
             </Switch>
-            <Footer />
           </Router>
         </div>
+        <Footer />
       </div>
     </div>
   );
