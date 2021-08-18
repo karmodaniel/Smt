@@ -4,6 +4,7 @@ import "./Home.scss";
 import "../../App.scss";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import Ranking from "../../components/Ranking/Ranking";
+import PlayersStatistics from "../../components/PlayersStatistics/PlayersStatistics";
 
 export default function Home() {
   const teams = [
@@ -24,7 +25,15 @@ export default function Home() {
     },
     {
       name: "Ajax",
-      age: 19.7,
+      age: 30.7,
+    },
+    {
+      name: "Flamengo",
+      age: 22.7,
+    },
+    {
+      name: "Flamengo",
+      age: 22.7,
     },
     {
       name: "Flamengo",
@@ -53,25 +62,35 @@ export default function Home() {
           <TableComponent teams={teams} />
         </CardComponent>
       </section>
-      <section className="card tops">
-        <CardComponent title="Top 5" action={false}>
-          <section className="card-content">
-            <div className="rankings">
-              <Ranking
-                title={"Highest avg age"}
-                info={avgTeams}
-                active={getBiggestValue()}
-              ></Ranking>
-            </div>
-            <div className="rankings ranking-lowest">
-              <Ranking
-                title={"Lowest avg age"}
-                info={avgTeams}
-                active={getLowestValue()}
-              ></Ranking>
-            </div>
-          </section>
-        </CardComponent>
+      <section className="statistics-container card">
+        <section className="tops">
+          <CardComponent title="Top 5" action={false}>
+            <section className="card-content">
+              <div className="rankings">
+                <Ranking
+                  title={"Highest avg age"}
+                  info={avgTeams}
+                  active={getBiggestValue()}
+                ></Ranking>
+              </div>
+              <div className="rankings ranking-lowest">
+                <Ranking
+                  title={"Lowest avg age"}
+                  info={avgTeams}
+                  active={getLowestValue()}
+                ></Ranking>
+              </div>
+            </section>
+          </CardComponent>
+        </section>
+        <section className="field">
+          <div className="most-and-less">
+            <PlayersStatistics dotted={true}></PlayersStatistics>
+          </div>
+          <div className="most-and-less less-picked">
+            <PlayersStatistics dotted={false}></PlayersStatistics>
+          </div>
+        </section>
       </section>
     </div>
   );

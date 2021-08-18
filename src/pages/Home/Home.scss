@@ -1,3 +1,5 @@
+@import "../../assets//utilities//variables";
+
 .home-container {
   display: flex;
   justify-content: space-around;
@@ -7,28 +9,63 @@
     width: 46%;
   }
 
-  .card-content {
+  .statistics-container {
     display: flex;
-    justify-content: space-between;
-    padding: 10px;
-  }
+    flex-direction: column;
 
-  .rankings {
-    width: 48%;
+    .tops {
+      width: 100%;
+
+      .card-content {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+
+        .rankings {
+          width: 48%;
+        }
+      }
+    }
+
+    .field {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+      min-height: 330px;
+      margin-top: 30px;
+      background-image: url(../../assets/img/field-horizontal.svg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+
+      .most-and-less {
+        width: 250px;
+        height: 250px;
+        display: flex;
+        align-items: center;
+      }
+
+      .less-picked {
+        padding-bottom: 10px;
+      }
+    }
   }
 
   @media only screen and (max-width: 1200px) {
-    .card-content {
+    .statistics-container .tops .card-content {
       flex-direction: column;
       justify-content: center;
-    }
 
-    .rankings {
-      width: 100%;
-    }
+      .rankings {
+        width: 100%;
+      }
 
-    .ranking-lowest {
-      margin-top: 30px;
+      .ranking-lowest {
+        margin-top: 30px;
+      }
     }
   }
 
