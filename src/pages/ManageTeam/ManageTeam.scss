@@ -1,0 +1,139 @@
+.manage-container {
+  padding: 40px 40px;
+  transition: all 0.8s ease;
+
+  .manage-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 160px 40px 160px;
+    transition: all 0.6s ease;
+
+    .team-information {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 40px;
+
+      .team-information-title {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        font-size: 16px;
+        color: #8d8d8e;
+      }
+
+      .team-information-wrapper {
+        display: flex;
+        justify-content: space-between;
+
+        .team-information-left {
+          width: 45%;
+        }
+
+        .team-information-left div {
+          margin-bottom: 15px;
+        }
+
+        .team-information-right {
+          width: 45%;
+
+          .team-website {
+            margin-bottom: 70px;
+          }
+
+          .team-type {
+            margin-bottom: 20px;
+          }
+        }
+      }
+    }
+
+    .configure-squad-wrapper {
+      display: flex;
+      flex-direction: column;
+
+      .configure-squad-title {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        font-size: 16px;
+        color: #8d8d8e;
+      }
+
+      .configure-squad {
+        display: flex;
+        justify-content: space-between;
+
+        .configure-squad-left {
+          width: 45%;
+
+          .configure-squad-formation {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+
+            .configure-squad-formation-title {
+              margin-right: 40px;
+            }
+
+            .configure-squad-formation-tatics {
+              width: 100px;
+            }
+
+            .configure-squad-field {
+              width: 100%;
+            }
+          }
+        }
+
+        .configure-squad-right {
+          width: 45%;
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .manage-wrapper {
+      padding: 20px 20px 40px 20px;
+    }
+  }
+
+  @media only screen and (max-width: 980px) {
+    .manage-wrapper {
+      padding: 20px 20px 40px 20px;
+
+      .team-information .team-information-wrapper {
+        flex-direction: column;
+
+        .team-information-left {
+          width: 100%;
+        }
+
+        .team-information-right {
+          width: 100%;
+        }
+      }
+
+      .configure-squad-wrapper .configure-squad {
+        flex-direction: column;
+
+        .configure-squad-left {
+          width: 100%;
+        }
+
+        .configure-squad-right {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .manage-container {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}

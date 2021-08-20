@@ -1,0 +1,94 @@
+@import "../../assets//utilities//variables";
+
+.home-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 40px 20px 0px 20px;
+
+  .card {
+    width: 46%;
+  }
+
+  .statistics-container {
+    display: flex;
+    flex-direction: column;
+
+    .tops {
+      width: 100%;
+
+      .card-content {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+
+        .rankings {
+          width: 48%;
+        }
+      }
+    }
+
+    .field {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+      min-height: 330px;
+      margin-top: 30px;
+      background-image: url(../../assets/img/field-horizontal.svg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+
+      .most-and-less {
+        width: 250px;
+        height: 250px;
+        display: flex;
+        align-items: center;
+      }
+
+      .less-picked {
+        padding-bottom: 10px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .statistics-container .tops .card-content {
+      flex-direction: column;
+      justify-content: center;
+
+      .rankings {
+        width: 100%;
+      }
+
+      .ranking-lowest {
+        margin-top: 30px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 980px) {
+    & {
+      flex-direction: column;
+      padding-right: 50px;
+      padding-left: 50px;
+    }
+
+    .card {
+      width: 100%;
+    }
+
+    .tops {
+      margin-top: 30px;
+    }
+  }
+
+  @media only screen and (max-width: 720px) {
+    & {
+      padding-right: 5px;
+      padding-left: 5px;
+    }
+  }
+}
