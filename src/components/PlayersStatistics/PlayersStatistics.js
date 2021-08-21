@@ -7,7 +7,7 @@ export default function PlayersStatistics(props) {
 
   useEffect(() => {
     isDotted();
-  }, [props]);
+  });
 
   const isDotted = () => {
     if (props.dotted) {

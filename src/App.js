@@ -4,8 +4,15 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home ";
 import ManageTeam from "./pages/ManageTeam/ManageTeam";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    if (localStorage.getItem('teams') === null) {
+      localStorage.setItem('teams', JSON.stringify([]));
+    }
+  });
+  
   return (
     <div className="App">
       <div className="container">

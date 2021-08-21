@@ -1,8 +1,10 @@
 import React from "react";
 import "./Header.scss";
 import logo from "../../assets/img/logo-venturus.png";
+import { useHistory } from 'react-router-dom';
 
 export default function Header() {
+  const history = useHistory();
   const user = {
     name: "Jina Carano",
   };
@@ -16,7 +18,7 @@ export default function Header() {
   return (
     <header className="header">
       <div className="wrapper">
-        <section className="company-logo">
+        <section className="company-logo" onClick={() => history.push('/')}>
           <div>
             <img src={logo} alt="Venturus logo" className="logo"></img>
           </div>

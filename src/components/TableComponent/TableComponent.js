@@ -23,6 +23,8 @@ export default function TableComponent(props) {
     head: {
       backgroundColor: "$white",
       color: "$black",
+      fontSize: 18,
+      fontWeight: 600,
 
       "&:nth-of-type(1)": {
         width: "30%",
@@ -41,7 +43,8 @@ export default function TableComponent(props) {
       },
     },
     body: {
-      fontSize: 14,
+      fontSize: 18,
+      fontWeight: 600
     },
   }))(TableCell);
 
@@ -93,7 +96,7 @@ export default function TableComponent(props) {
                 <StyledTableRow
                   hover
                   className={classes.hover}
-                  key={teams.name}
+                  key={teams.id}
                 >
                   <StyledTableCell component="th" scope="row">
                     {teams.name}

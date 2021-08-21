@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import "./Home.scss";
 import "../../App.scss";
@@ -7,16 +7,12 @@ import Ranking from "../../components/Ranking/Ranking";
 import PlayersStatistics from "../../components/PlayersStatistics/PlayersStatistics";
 
 export default function Home() {
-  const teams = [
-    {
-      name: "Barcelona",
-      description: "Barcelona Squad",
-    },
-    {
-      name: "Cluble de Regatas Flamengo",
-      description: "Flamengo Squad",
-    },
-  ];
+  const [dataArray, setDataArray] = useState([]);
+
+  useEffect(() => {
+    const data = localStorage.getItem('teams');
+    setDataArray(JSON.parse(data));
+  }, []);
 
   const avgTeams = [
     {
@@ -33,11 +29,11 @@ export default function Home() {
     },
     {
       name: "Flamengo",
-      age: 22.7,
+      age: 23.7,
     },
     {
       name: "Flamengo",
-      age: 22.7,
+      age: 24.7,
     },
   ];
 
@@ -59,7 +55,7 @@ export default function Home() {
     <div className="home-container">
       <section className="card">
         <CardComponent title="My teams" action={true}>
-          <TableComponent teams={teams} />
+          <TableComponent teams={dataArray} />
         </CardComponent>
       </section>
       <section className="statistics-container card">

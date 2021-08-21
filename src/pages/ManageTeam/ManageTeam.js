@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import "../../App.scss";
 import "./ManageTeam.scss";
 import CardComponent from "../../components/CardComponent/CardComponent";
@@ -13,6 +13,8 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import field from "../../assets/img/field-vertical.svg";
 import { Button } from "@material-ui/core";
+import { v4 as uuid } from "uuid";
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,27 +46,86 @@ const useStyles = makeStyles((theme) => ({
     width: 200,
     transition: "all 0.6s ease",
 
-    [theme.breakpoints.down('xs')]: {
-      width: 145
-    }
+    [theme.breakpoints.down("xs")]: {
+      width: 145,
+    },
   },
   button: {
     background: "linear-gradient(0deg, #852f7f 48%, #93337e 83%)",
     fontWeight: 700,
-    textTransform: "capitalize"
-  }
+    textTransform: "capitalize",
+  },
 }));
 
 export default function ManageTeam() {
   const classes = useStyles();
-  const [value, setValue] = useState("female");
-  const [state, setState] = useState({
-    age: "",
-    name: "hai",
-  });
+  const history = useHistory();
+  const [teamName, setTeamName] = useState("");
+  const [teamDescription, setTeamDescription] = useState("");
+  const [teamsetTeamWebsite, setTeamWebsite] = useState("");
+  const [teamType, setTeamType] = useState("");
+  const [teamTags, setTeamTags] = useState([]);
+  const [teamFormation, setTeamFormation] = useState("");
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
+  useEffect(() => {
+    cleanFields();
+  },[]);
+
+  
+  const handleName = (event) => {
+    setTeamName(event.target.value);
+  }
+
+  const handleDescription = (event) => {
+    setTeamDescription(event.target.value);
+  }
+
+  const handleWebsite = (event) => {
+    setTeamWebsite(event.target.value);
+  }
+
+  const handleType = (event) => {
+    setTeamType(event.target.value);
+  }
+
+  const handleTags = (tags) => {
+    setTeamTags(tags);
+  }
+
+  const handleFormation = (event) => {
+    setTeamFormation(event.target.value);
+  }
+
+  const saveTeamInformation = () => {
+    const teamInfomation = {
+      id: uuid(),
+      name: teamName,
+      description: teamDescription,
+      website: teamsetTeamWebsite,
+      type: teamType,
+      tags: teamTags,
+      formation: teamFormation
+    };
+
+    const data = localStorage.getItem('teams');
+    const dataArray =  JSON.parse(data);
+
+    dataArray.push(teamInfomation);
+    localStorage.setItem('teams', JSON.stringify(dataArray));
+    console.log(localStorage.getItem('teams'));
+
+    cleanFields();
+    history.push('/');
+
+    return 'Team successfully saved';
+  };
+
+  const cleanFields = () => {
+    setTeamName("");
+    setTeamDescription("");
+    setTeamWebsite("");
+    setTeamType("");
+    setTeamTags([]);
   };
 
   return (
@@ -80,7 +141,9 @@ export default function ManageTeam() {
                 <div>
                   <h4>Team name</h4>
                   <TextField
-                    id="teamName"
+                    id="name"
+                    name="name"
+                    onChange={(name) =>  handleName(name)}
                     className={classes.textField}
                     placeholder="Insert team name"
                     size="small"
@@ -92,8 +155,10 @@ export default function ManageTeam() {
                   <h4>Description</h4>
                   <TextField
                     id="description"
+                    name="description"
+                    onChange= {(description) =>  handleDescription(description)}
                     className={classes.textArea}
-                    placeholder="Insert team name"
+                    placeholder="Insert description"
                     multiline
                     minRows={12}
                     maxRows={12}
@@ -104,9 +169,11 @@ export default function ManageTeam() {
               </section>
               <section className="team-information-right">
                 <div className="team-website">
-                  <h4>Team Website</h4>
+                  <h4>Team website</h4>
                   <TextField
-                    id="teamWebsite"
+                    id="website"
+                    name="website"
+                    onChange = {(website) =>  handleWebsite(website)} 
                     className={classes.textField}
                     placeholder="http://myteam.com"
                     size="small"
@@ -115,12 +182,13 @@ export default function ManageTeam() {
                   />
                 </div>
                 <div className="team-type">
-                <h4>Team type</h4>
+                  <h4>Team type</h4>
                   <FormControl component="fieldset">
                     <RadioGroup
-                      name="gender1"
-                      value={value}
-                      onChange={handleChange}
+                      id="type"
+                      name="type"
+                      value={teamType}
+                      onChange={(type) =>  handleType(type)}
                       className={classes.radio}
                     >
                       <FormControlLabel
@@ -137,11 +205,13 @@ export default function ManageTeam() {
                   </FormControl>
                 </div>
                 <div>
-                <h4>Tags</h4>
+                  <h4>Tags</h4>
                   <ChipInput
+                    id="tags"
+                    name="tags"
                     className={classes.root}
-                    defaultValue={["foo", "bar"]}
-                    onChange={(chips) => handleChange(chips)}
+                    defaultValue={teamTags}
+                    onChange={(chips) =>  handleTags(chips)}
                     disableUnderline={true}
                     fullWidthInput={true}
                   />
@@ -151,7 +221,7 @@ export default function ManageTeam() {
           </section>
           <section className="configure-squad-wrapper">
             <div className="configure-squad-title">
-              <h1>Configure Team</h1>
+              <h1>Configure Squad</h1>
             </div>
             <section className="configure-squad">
               <section className="configure-squad-left">
@@ -171,33 +241,31 @@ export default function ManageTeam() {
                       <Select
                         native
                         className={classes.select}
-                        defaultValue={1}
-                        placeholder="ola"
-                        value={state.age}
-                        onChange={handleChange}
+                        defaultValue={teamFormation}
+                        onChange={(formation) =>  handleFormation(formation)}
                         inputProps={{
                           name: "age",
                           id: "outlined-age-native-simple",
                         }}
                       >
                         <option aria-label="None" value="" />
-                        <option value={1}>{"3-4-3"}</option>
-                        <option value={2}>{"4-4-2"}</option>
-                        <option value={3}>{"3-5-2"}</option>
+                        <option value={"3-4-3"}>{"3-4-3"}</option>
+                        <option value={"4-4-2"}>{"4-4-2"}</option>
+                        <option value={"3-5-2"}>{"3-5-2"}</option>
                       </Select>
                     </FormControl>
                   </div>
                 </div>
                 <div className="configure-squad-field">
                   <div className="configure-squad-field-img">
-                    <img src={field}></img>
+                    <img src={field} alt={'logo venturus'}></img>
                   </div>
                   <div className="configure-squad-field-save">
                     <Button
-                    className={classes.button}
+                      className={classes.button}
                       variant="contained"
                       size="large"
-                      color="primary"
+                      onClick={saveTeamInformation}
                       fullWidth
                     >
                       Save
@@ -206,12 +274,12 @@ export default function ManageTeam() {
                 </div>
               </section>
               <section className="configure-squad-right">
-              <div>
+                <div>
                   <h4>Search Players</h4>
                   <TextField
                     id="teamName"
                     className={classes.textField}
-                    placeholder="Insert player name"
+                    placeholder="Enter your text"
                     size="small"
                     fullWidth
                     variant="outlined"
