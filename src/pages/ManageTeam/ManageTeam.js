@@ -2,29 +2,40 @@ import { React, useEffect, useState } from "react";
 import "../../App.scss";
 import "./ManageTeam.scss";
 import CardComponent from "../../components/CardComponent/CardComponent";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
 import ChipInput from "material-ui-chip-input";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
 import field from "../../assets/img/field-vertical.svg";
-import { Button } from "@material-ui/core";
 import { v4 as uuid } from "uuid";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import {
+  makeStyles,
+  createTheme,
+  ThemeProvider,
+  Button,
+  withStyles,
+  Select,
+  InputLabel,
+  FormControlLabel,
+  FormControl,
+  RadioGroup,
+  Radio,
+  TextField,
+  Typography 
+} from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+
+const StyleChipInput = withStyles({
   root: {
     border: "1px solid #DADADA",
     padding: 15,
     borderRadius: 5,
-    height: 166,
+    marginTop: 10,
+    height: 169,
     width: "100%",
     cursor: "text",
-    "&:focus, &:active, &:hover": {
+    "&:active, &:hover": {
       border: "none",
       borderRadius: 5,
       boxShadow: "0 0 0 1px grey",
@@ -32,8 +43,29 @@ const useStyles = makeStyles((theme) => ({
       transition: ".1s",
     },
   },
+  chip: {
+    backgroundColor: "#C50341 !important",
+    color: "#ffffff",
+  },
+})(ChipInput);
+
+const StyleRadio = withStyles({
+  root: {
+    color: "#8D8D8D",
+    "&$checked": {
+      color: "#A0387E",
+    },
+  },
+  checked: {},
+})((props) => <Radio color="default" {...props} />);
+
+const useStyles = makeStyles((theme) => ({
   textField: {
     marginTop: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 600
   },
   textArea: {
     marginTop: 10,
@@ -54,243 +86,219 @@ const useStyles = makeStyles((theme) => ({
     background: "linear-gradient(0deg, #852f7f 48%, #93337e 83%)",
     fontWeight: 700,
     textTransform: "capitalize",
+    color: "#ffffff",
   },
 }));
+
+const theme = createTheme({
+  palette: {
+    secondary: {
+      main: "#DADADA",
+    },
+  },
+});
+
+const schema = yup.object().shape({
+  name: yup.string().required().ensure().trim(),
+  description: yup.string().ensure().trim(),
+  website: yup.string().required().ensure().trim().url(),
+  type: yup.string().required().ensure().trim(),
+  formation: yup.string().required().ensure().trim(),
+});
 
 export default function ManageTeam() {
   const classes = useStyles();
   const history = useHistory();
-  const [teamName, setTeamName] = useState("");
-  const [teamDescription, setTeamDescription] = useState("");
-  const [teamsetTeamWebsite, setTeamWebsite] = useState("");
-  const [teamType, setTeamType] = useState("");
   const [teamTags, setTeamTags] = useState([]);
-  const [teamFormation, setTeamFormation] = useState("");
+  const {
+    register, formState: { errors }, handleSubmit} = useForm({
+    resolver: yupResolver(schema),
+  });
 
   useEffect(() => {
     cleanFields();
-  },[]);
+  }, []);
 
-  
-  const handleName = (event) => {
-    setTeamName(event.target.value);
-  }
+  const onSubmit = (data) => {
+    data.id = uuid();
+    data.tags = teamTags;
 
-  const handleDescription = (event) => {
-    setTeamDescription(event.target.value);
-  }
+    const localData = localStorage.getItem("teams");
+    const dataArray = JSON.parse(localData);
 
-  const handleWebsite = (event) => {
-    setTeamWebsite(event.target.value);
-  }
-
-  const handleType = (event) => {
-    setTeamType(event.target.value);
-  }
+    dataArray.push(data);
+    localStorage.setItem("teams", JSON.stringify(dataArray));
+    history.push("/");
+  };
 
   const handleTags = (tags) => {
     setTeamTags(tags);
-  }
-
-  const handleFormation = (event) => {
-    setTeamFormation(event.target.value);
-  }
-
-  const saveTeamInformation = () => {
-    const teamInfomation = {
-      id: uuid(),
-      name: teamName,
-      description: teamDescription,
-      website: teamsetTeamWebsite,
-      type: teamType,
-      tags: teamTags,
-      formation: teamFormation
-    };
-
-    const data = localStorage.getItem('teams');
-    const dataArray =  JSON.parse(data);
-
-    dataArray.push(teamInfomation);
-    localStorage.setItem('teams', JSON.stringify(dataArray));
-    console.log(localStorage.getItem('teams'));
-
-    cleanFields();
-    history.push('/');
-
-    return 'Team successfully saved';
   };
 
   const cleanFields = () => {
-    setTeamName("");
-    setTeamDescription("");
-    setTeamWebsite("");
-    setTeamType("");
     setTeamTags([]);
   };
 
   return (
-    <div className="manage-container">
-      <CardComponent title={"Create your team"} action={false}>
-        <section className="manage-wrapper">
-          <section className="team-information">
-            <div className="team-information-title">
-              <h1>Team Information</h1>
-            </div>
-            <section className="team-information-wrapper">
-              <section className="team-information-left">
-                <div>
-                  <h4>Team name</h4>
-                  <TextField
-                    id="name"
-                    name="name"
-                    onChange={(name) =>  handleName(name)}
-                    className={classes.textField}
-                    placeholder="Insert team name"
-                    size="small"
-                    fullWidth
-                    variant="outlined"
-                  />
-                </div>
-                <div>
-                  <h4>Description</h4>
-                  <TextField
-                    id="description"
-                    name="description"
-                    onChange= {(description) =>  handleDescription(description)}
-                    className={classes.textArea}
-                    placeholder="Insert description"
-                    multiline
-                    minRows={12}
-                    maxRows={12}
-                    fullWidth
-                    variant="outlined"
-                  />
-                </div>
-              </section>
-              <section className="team-information-right">
-                <div className="team-website">
-                  <h4>Team website</h4>
-                  <TextField
-                    id="website"
-                    name="website"
-                    onChange = {(website) =>  handleWebsite(website)} 
-                    className={classes.textField}
-                    placeholder="http://myteam.com"
-                    size="small"
-                    fullWidth
-                    variant="outlined"
-                  />
-                </div>
-                <div className="team-type">
-                  <h4>Team type</h4>
-                  <FormControl component="fieldset">
-                    <RadioGroup
-                      id="type"
-                      name="type"
-                      value={teamType}
-                      onChange={(type) =>  handleType(type)}
-                      className={classes.radio}
-                    >
-                      <FormControlLabel
-                        value="real"
-                        control={<Radio />}
-                        label="Real"
-                      />
-                      <FormControlLabel
-                        value="fantasy"
-                        control={<Radio />}
-                        label="Fantasy"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-                <div>
-                  <h4>Tags</h4>
-                  <ChipInput
-                    id="tags"
-                    name="tags"
-                    className={classes.root}
-                    defaultValue={teamTags}
-                    onChange={(chips) =>  handleTags(chips)}
-                    disableUnderline={true}
-                    fullWidthInput={true}
-                  />
-                </div>
-              </section>
-            </section>
-          </section>
-          <section className="configure-squad-wrapper">
-            <div className="configure-squad-title">
-              <h1>Configure Squad</h1>
-            </div>
-            <section className="configure-squad">
-              <section className="configure-squad-left">
-                <div className="configure-squad-formation">
-                  <div className="configure-squad-formation-title">
-                    <h3>Formation</h3>
-                  </div>
-                  <div className="configure-squad-formation-tatics">
-                    <FormControl
+    <ThemeProvider theme={theme}>
+      <div className="manage-container">
+        <CardComponent title={"Create your team"} action={false}>
+          <form onSubmit={handleSubmit(onSubmit)} className="manage-wrapper">
+            <section className="team-information">
+              <div className="team-information-title">
+                <h1>Team Information</h1>
+              </div>
+              <section className="team-information-wrapper">
+                <section className="team-information-left">
+                  <div>
+                    <Typography className={classes.label} color={!errors.name ? "textPrimary" : "error"}>Team name</Typography>
+                    <TextField
+                      color={!errors.name ? "secondary" : "primary"}
+                      error={!!errors.name}
+                      type="text"
+                      name="name"
+                      {...register("name")}
+                      className={classes.textField}
+                      placeholder="Insert team name"
+                      size="small"
+                      fullWidth
                       variant="outlined"
-                      className={classes.formControl}
-                    >
-                      <InputLabel
-                        shrink={true}
-                        htmlFor="outlined-age-native-simple"
-                      ></InputLabel>
-                      <Select
-                        native
-                        className={classes.select}
-                        defaultValue={teamFormation}
-                        onChange={(formation) =>  handleFormation(formation)}
-                        inputProps={{
-                          name: "age",
-                          id: "outlined-age-native-simple",
-                        }}
+                    />
+                  </div>
+                  <div>
+                    <Typography className={classes.label}>Description</Typography>
+                    <TextField
+                      color={"secondary"}
+                      name="description"
+                      {...register("description")}
+                      className={classes.textArea}
+                      placeholder="Insert description"
+                      multiline
+                      minRows={13}
+                      maxRows={13}
+                      fullWidth
+                      variant="outlined"
+                    />
+                  </div>
+                </section>
+                <section className="team-information-right">
+                  <div className="team-website">
+                    <Typography className={classes.label} color={!errors.website ? "textPrimary" : "error"}>Team website</Typography>
+                    <TextField
+                      color={!errors.name ? "secondary" : "primary"}
+                      error={!!errors.website}
+                      name="website"
+                      {...register("website")}
+                      className={classes.textField}
+                      placeholder="http://myteam.com"
+                      size="small"
+                      fullWidth
+                      variant="outlined"
+                    />
+                  </div>
+                  <div className="team-type">
+                    <Typography className={classes.label} color={!errors.type ? "textPrimary" : "error"}>Team type</Typography>
+                    <FormControl component="fieldset">
+                      <RadioGroup
+                        name="type"
+                        {...register("type")}
+                        className={classes.radio}
                       >
-                        <option aria-label="None" value="" />
-                        <option value={"3-4-3"}>{"3-4-3"}</option>
-                        <option value={"4-4-2"}>{"4-4-2"}</option>
-                        <option value={"3-5-2"}>{"3-5-2"}</option>
-                      </Select>
+                        <FormControlLabel
+                          value="real"
+                          control={<StyleRadio />}
+                          label="Real"
+                        />
+                        <FormControlLabel
+                          value="fantasy"
+                          control={<StyleRadio />}
+                          label="Fantasy"
+                        />
+                      </RadioGroup>
                     </FormControl>
                   </div>
-                </div>
-                <div className="configure-squad-field">
-                  <div className="configure-squad-field-img">
-                    <img src={field} alt={'logo venturus'}></img>
+                  <div>
+                    <Typography className={classes.label}>Tags</Typography>
+                    <StyleChipInput
+                      id="tags"
+                      name="tags"
+                      onChange={(chips) => handleTags(chips)}
+                      disableUnderline={true}
+                      newChipKeys={["Enter", ";"]}
+                      fullWidthInput={true}
+                    />
                   </div>
-                  <div className="configure-squad-field-save">
-                    <Button
-                      className={classes.button}
-                      variant="contained"
-                      size="large"
-                      onClick={saveTeamInformation}
-                      fullWidth
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </div>
-              </section>
-              <section className="configure-squad-right">
-                <div>
-                  <h4>Search Players</h4>
-                  <TextField
-                    id="teamName"
-                    className={classes.textField}
-                    placeholder="Enter your text"
-                    size="small"
-                    fullWidth
-                    variant="outlined"
-                  />
-                </div>
-                <div>search content</div>
+                </section>
               </section>
             </section>
-          </section>
-        </section>
-      </CardComponent>
-    </div>
+            <section className="configure-squad-wrapper">
+              <div className="configure-squad-title">
+                <h1>Configure Squad</h1>
+              </div>
+              <section className="configure-squad">
+                <section className="configure-squad-left">
+                  <div className="configure-squad-formation">
+                    <div className="configure-squad-formation-title">
+                    <Typography className={classes.label} color={!errors.formation ? "textPrimary" : "error"}>Formation</Typography>
+                    </div>
+                    <div className="configure-squad-formation-tatics">
+                      <FormControl
+                        variant="outlined"
+                        className={classes.formControl}
+                      >
+                        <InputLabel
+                          shrink={true}
+                          htmlFor="outlined-age-native-simple"
+                        ></InputLabel>
+                        <Select
+                          color={!errors.formation ? "secondary" : "primary"}
+                          error={!!errors.formation}
+                          native
+                          className={classes.select}
+                          {...register("formation")}
+                        >
+                          <option aria-label="None" value="" />
+                          <option value={"3-4-3"}>{"3-4-3"}</option>
+                          <option value={"4-4-2"}>{"4-4-2"}</option>
+                          <option value={"3-5-2"}>{"3-5-2"}</option>
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+                  <div className="configure-squad-field">
+                    <div className="configure-squad-field-img">
+                      <img src={field} alt={"logo venturus"}></img>
+                    </div>
+                    <div className="configure-squad-field-save">
+                      <Button
+                        className={classes.button}
+                        variant="contained"
+                        type="submit"
+                        fullWidth
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                </section>
+                <section className="configure-squad-right">
+                  <div>
+                    <Typography className={classes.label}>Search Players</Typography>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      className={classes.textField}
+                      placeholder="Enter your text"
+                      fullWidth
+                    />
+                  </div>
+                  <div>search content</div>
+                </section>
+              </section>
+            </section>
+          </form>
+        </CardComponent>
+      </div>
+    </ThemeProvider>
   );
 }

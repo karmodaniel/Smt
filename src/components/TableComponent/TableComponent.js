@@ -17,7 +17,7 @@ export default function TableComponent(props) {
 
   useEffect(() => {
     setTeams(props.teams);
-  }, [props]);
+  }, [props.teams]);
 
   const StyledTableCell = withStyles(() => ({
     head: {
