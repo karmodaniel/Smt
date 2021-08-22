@@ -11,6 +11,9 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
+import ShareIcon from '@material-ui/icons/Share';
+import EditIcon from '@material-ui/icons/Edit';
 
 export default function TableComponent(props) {
   const [teams, setTeams] = useState([]);
@@ -67,7 +70,7 @@ export default function TableComponent(props) {
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
       },
-      "&:hover td": {
+      "&:hover td:nth-of-type(2)": {
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
       },
@@ -77,7 +80,25 @@ export default function TableComponent(props) {
       justifyContent: "center",
       marginTop: 20,
     },
+    icon: {
+      marginLeft: 10
+    }
   });
+
+  const handleDelete = (id) => {
+    const data = localStorage.getItem('teams');
+    const dataArray = JSON.parse(data);
+
+    const removedArray = [];
+    dataArray.forEach((team) => {
+      if (team.id !== id) {
+        removedArray.push(team);
+      }
+    });
+
+    setTeams(removedArray);
+    localStorage.setItem('teams', JSON.stringify(removedArray));
+  }
 
   const classes = useStyles();
   return (
@@ -88,6 +109,7 @@ export default function TableComponent(props) {
             <TableRow>
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell align="left">Description</StyledTableCell>
+              <StyledTableCell align="right" ></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -103,6 +125,12 @@ export default function TableComponent(props) {
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     {teams.description}
+                  </StyledTableCell>
+
+                  <StyledTableCell align="right">
+                    <DeleteIcon onClick={() => handleDelete(teams.id)} ></DeleteIcon>
+                    <ShareIcon className={classes.icon}></ShareIcon>
+                    <EditIcon className={classes.icon}></EditIcon>
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
