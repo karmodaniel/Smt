@@ -1,83 +1,71 @@
 @import "../../assets/utilities/variables";
 
-.data-container {
-  position: relative;
-  width: fit-content;
+.player-container {
+  h1 {
+    color: $white;
+    margin-bottom: 12px;
+    font-size: 20px;
+  }
 
-  .player-container {
-    position: relative;
-    width: fit-content;
-
-    .player {
-      position: absolute;
-      min-height: $playerSize;
-      min-width: $playerSize;
-      top: 7px;
-      left: 8px;
-      border-radius: 50%;
-      background-image: url(../../assets/img/player.jpg);
-      background-repeat: no-repeat;
-      background-size: cover;
-      border: 5px solid #9f0d68;
-      box-shadow: 10px 10px 10px rgba(132, 16, 126, 0.8),
-        10px -10px 10px rgba(132, 16, 126, 0.8),
-        -10px 10px 10px rgba(132, 16, 126, 0.8),
-        -10px -10px 10px rgba(132, 16, 126, 0.8);
+  .player-content {
+    display: flex;
+    
+    h2 {
+      color: $white;
+      margin-left: -4px;
+      font-size: 20px;
     }
 
-    .dots {
-      height: $playerSize + 15px;
-      width: $playerSize + 15px;
+    .dash {
+      height: 1px;
+      width: 55px;
+      background-color: $white;
+    }
+
+    .most-player {
       border-radius: 50%;
-      border: 4px dashed #ad81c7;
+      border: 3px dashed #ad81c7;
+      background-image: linear-gradient(to right, black 33%, rgba(255,255,255,0) 0%);
+      background-position: bottom;
+      background-size: 3px 1px;
+      background-repeat: repeat-x;
+    }
 
-      .percent {
-        position: absolute;
-        top: 0px;
-        right: -80px;
-
-        .dash {
-          height: 2px;
-          width: 75px;
-          background-color: red;
-        }
-      }
-
-      .percent h1 {
-        font-size: 26px;
-      }
+    .user-initials {
+      background-color: $white;
+      color: $black;
+      border-radius: 50%;
+      height: $playerSize + 12px;
+      width: $playerSize + 12px;
+      margin: 2px;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #9f0d68;
+      box-shadow: 5px 5px 7px rgba(132, 16, 126, 0.5),
+        5px -5px 7px rgba(132, 16, 126, 0.5), -5px 5px 7px rgba(132, 16, 126, 0.5),
+        -5px -5px 7px rgba(132, 16, 126, 0.5);
     }
   }
 
-  .player-not-dotted {
-    position: relative;
-    min-height: $playerSize;
-    min-width: $playerSize;
-    top: 7px;
-    left: 8px;
-    border-radius: 50%;
-    background-image: url(../../assets/img/player.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    border: 5px solid #9f0d68;
-    box-shadow: 5px 5px 7px rgba(132, 16, 126, 0.5),
-      5px -5px 7px rgba(132, 16, 126, 0.5), -5px 5px 7px rgba(132, 16, 126, 0.5),
-      -5px -5px 7px rgba(132, 16, 126, 0.5);
-
-    .percent-not-dotted {
-      position: absolute;
-      top: 0px;
-      right: -90px;
-
-      .dash-not-dotted {
-        height: 2px;
-        width: 75px;
-        background-color: red;
-      }
+  @media only screen and (max-width: 480px) {
+    h1 {
+      font-size: 18px;
     }
 
-    .percent-not-dotted h1 {
-      font-size: 26px;
+    .player-content {
+      flex-direction: column-reverse;
+
+      h2 {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .most-player {
+        width: 123px;
+      }
     }
   }
 }

@@ -81,10 +81,10 @@ export default function Home() {
         </section>
         <section className="field">
           <div className="most-and-less">
-            <PlayersStatistics dotted={true}></PlayersStatistics>
+            <PlayersStatistics dotted={true} name={"Marilia Soares"} percent={75}></PlayersStatistics>
           </div>
-          <div className="most-and-less less-picked">
-            <PlayersStatistics dotted={false}></PlayersStatistics>
+          <div className="most-and-less">
+            <PlayersStatistics dotted={false} name={"Daniel Araujo"} percent={25}></PlayersStatistics>
           </div>
         </section>
       </section>
