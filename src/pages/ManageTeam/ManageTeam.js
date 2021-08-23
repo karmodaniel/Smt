@@ -6,7 +6,7 @@ import ChipInput from "material-ui-chip-input";
 import field from "../../assets/img/field-vertical.svg";
 import { v4 as uuid } from "uuid";
 import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
@@ -101,35 +101,64 @@ const theme = createTheme({
 const schema = yup.object().shape({
   name: yup.string().required().ensure().trim(),
   description: yup.string().ensure().trim(),
-  website: yup.string().required().ensure().trim().url(),
+  website: yup.string().required().ensure().trim(),
   type: yup.string().required().ensure().trim(),
   formation: yup.string().required().ensure().trim(),
 });
 
-export default function ManageTeam() {
+export default function ManageTeam( { match } ) {
   const classes = useStyles();
   const history = useHistory();
   const [teamTags, setTeamTags] = useState([]);
+
   const {
-    register, formState: { errors }, handleSubmit} = useForm({
+    register, formState: { errors }, handleSubmit, setValue, getValues, control} = useForm({
     resolver: yupResolver(schema),
   });
 
   useEffect(() => {
     cleanFields();
+    findTeam(match.params.id);
   }, []);
 
   const onSubmit = (data) => {
+    if (data.id) {
+      console.log(data);
+    }
+
     data.id = uuid();
     data.tags = teamTags;
 
-    const localData = localStorage.getItem("teams");
-    const dataArray = JSON.parse(localData);
+    // const localData = localStorage.getItem("teams");
+    // const dataArray = JSON.parse(localData);
 
-    dataArray.push(data);
-    localStorage.setItem("teams", JSON.stringify(dataArray));
+    // dataArray.push(data);
+    // localStorage.setItem("teams", JSON.stringify(dataArray));
     history.push("/");
   };
+
+  const findTeam = (id) => {
+    const data = localStorage.getItem('teams');
+    const dataArray = JSON.parse(data);
+
+    dataArray.forEach((team) => {
+      if (team.id === id) {
+        console.log(team);
+         setValue('name', team.name);
+         setValue('website', team.website);
+         setValue('description', team.description);
+         setValue('type', team.type);
+         setValue('tags', team.tags);
+         setValue('formation', team.formation);
+      } else {
+        history.push('/');
+      }
+    });
+
+    return false;
+    // setTeams(removedArray);
+    // localStorage.setItem('teams', JSON.stringify(removedArray));
+  }
 
   const handleTags = (tags) => {
     setTeamTags(tags);
@@ -152,11 +181,14 @@ export default function ManageTeam() {
                 <section className="team-information-left">
                   <div>
                     <Typography className={classes.label} color={!errors.name ? "textPrimary" : "error"}>Team name</Typography>
-                    <TextField
+                    <Controller
+                      render={({ field }) => <TextField {...field} />}
+                      control={control}
                       color={!errors.name ? "secondary" : "primary"}
                       error={!!errors.name}
                       type="text"
                       name="name"
+                      value={getValues('name')}
                       {...register("name")}
                       className={classes.textField}
                       placeholder="Insert team name"
@@ -170,6 +202,7 @@ export default function ManageTeam() {
                     <TextField
                       color={"secondary"}
                       name="description"
+                      value={getValues('description')}
                       {...register("description")}
                       className={classes.textArea}
                       placeholder="Insert description"
@@ -187,6 +220,7 @@ export default function ManageTeam() {
                     <TextField
                       color={!errors.name ? "secondary" : "primary"}
                       error={!!errors.website}
+                      //value={teamData.website}
                       name="website"
                       {...register("website")}
                       className={classes.textField}
@@ -201,6 +235,7 @@ export default function ManageTeam() {
                     <FormControl component="fieldset">
                       <RadioGroup
                         name="type"
+                        //value={teamData.type}
                         {...register("type")}
                         className={classes.radio}
                       >
@@ -222,6 +257,7 @@ export default function ManageTeam() {
                     <StyleChipInput
                       id="tags"
                       name="tags"
+                      //value={teamData.tags}
                       onChange={(chips) => handleTags(chips)}
                       disableUnderline={true}
                       newChipKeys={["Enter", ";"]}
@@ -253,11 +289,12 @@ export default function ManageTeam() {
                         <Select
                           color={!errors.formation ? "secondary" : "primary"}
                           error={!!errors.formation}
+                          //value={teamData.formation}
                           native
                           className={classes.select}
                           {...register("formation")}
                         >
-                          <option aria-label="None" value="" />
+                          <option aria-label={""} value={""} />
                           <option value={"3-4-3"}>{"3-4-3"}</option>
                           <option value={"4-4-2"}>{"4-4-2"}</option>
                           <option value={"3-5-2"}>{"3-5-2"}</option>
