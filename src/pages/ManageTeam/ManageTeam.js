@@ -24,6 +24,7 @@ import {
   TextField,
   Typography 
 } from "@material-ui/core";
+import { ErrorSharp } from "@material-ui/icons";
 
 
 const StyleChipInput = withStyles({
@@ -101,7 +102,7 @@ const theme = createTheme({
 const schema = yup.object().shape({
   name: yup.string().required().ensure().trim(),
   description: yup.string().ensure().trim(),
-  website: yup.string().required().ensure().trim(),
+  website: yup.string().required().ensure().trim().url(),
   type: yup.string().required().ensure().trim(),
   formation: yup.string().required().ensure().trim(),
 });
@@ -149,11 +150,9 @@ export default function ManageTeam( { match } ) {
          setValue('website', team.website);
          setValue('description', team.description);
          setValue('type', team.type);
-         setValue('tags', team.tags);
+         setTeamTags(team.tags);
          setValue('formation', team.formation);
-      } else {
-        history.push('/');
-      }
+      } 
     });
 
     return false;
@@ -182,66 +181,21 @@ export default function ManageTeam( { match } ) {
                 <section className="team-information-left">
                   <div>
                     <Typography className={classes.label} color={!errors.name ? "textPrimary" : "error"}>Team name</Typography>
-                    <Controller
-                      control={control}
-                      name="name"
-                      value={getValues('name')}
-                      //{...register("name")}
-                      defaultValue={false}
-                      render={({ field }) => 
-                      <TextField 
-                      {...register("name")}
-                      className={classes.textField} 
-                      color={!errors.name ? "secondary" : "primary"}
-                      error={!!errors.name}
-                      placeholder="Insert team name"
-                      size="small"
-                      fullWidth
-                      variant="outlined" 
-                      {...field} />}
-                    />
+                    <input name="name" type="text" className={`input ${errors.name ? "error" : "" }`  } placeholder="Insert team name" {...register("name")} ></input>
                   </div>
                   <div>
                     <Typography className={classes.label}>Description</Typography>
-                    <Controller 
-                    control={control}   
-                    name="description"
-                    value={getValues('description')}
-                    defaultValue={false}
-                    render={({ field }) =>
-                    <TextField
-                    {...register("description")}
-                    color={"secondary"}
-                    className={classes.textArea}
-                    placeholder="Insert description"
-                    multiline={true}
-                    minRows={13}
-                       maxRows={13}
-                       fullWidth
-                      variant="outlined"
-                      {...field} />}
-                    />
+                    <textarea name="description" className="description" rows={13}  type="text" {...register("description")} placeholder="Insert description"></textarea>
                   </div>
                 </section>
                 <section className="team-information-right">
                   <div className="team-website">
                     <Typography className={classes.label} color={!errors.website ? "textPrimary" : "error"}>Team website</Typography>
-                    <TextField
-                      color={!errors.name ? "secondary" : "primary"}
-                      error={!!errors.website}
-                      //value={teamData.website}
-                      name="website"
-                      {...register("website")}
-                      className={classes.textField}
-                      placeholder="http://myteam.com"
-                      size="small"
-                      fullWidth
-                      variant="outlined"
-                    />
+                    <input name="website" type="text" className={`input ${errors.website ? "error" : "" }`} {...register("website")} placeholder="http://myteam.com"></input>
                   </div>
                   <div className="team-type">
                     <Typography className={classes.label} color={!errors.type ? "textPrimary" : "error"}>Team type</Typography>
-                    <FormControl component="fieldset">
+                    {/* <FormControl component="fieldset">
                       <RadioGroup
                         name="type"
                         //value={teamData.type}
@@ -259,18 +213,25 @@ export default function ManageTeam( { match } ) {
                           label="Fantasy"
                         />
                       </RadioGroup>
-                    </FormControl>
+                    </FormControl> */}
+                    <div>
+                          <label htmlFor="real">Real</label>
+                      <input {...register("type")} type="radio" id="real" name="type" value="real"></input>
+
+                          <label htmlFor="fantasy">Fantasy</label>
+                          <input {...register("type")} type="radio" id="fantasy" name="type" value="fantasy"></input>
+                    </div>
                   </div>
                   <div>
                     <Typography className={classes.label}>Tags</Typography>
                     <StyleChipInput
                       id="tags"
                       name="tags"
-                      //value={teamData.tags}
+                      defaultValue={teamTags}
                       onChange={(chips) => handleTags(chips)}
                       disableUnderline={true}
                       newChipKeys={["Enter", ";"]}
-                      fullWidthInput={true}
+                      fullWidth={true}
                     />
                   </div>
                 </section>
@@ -287,7 +248,7 @@ export default function ManageTeam( { match } ) {
                     <Typography className={classes.label} color={!errors.formation ? "textPrimary" : "error"}>Formation</Typography>
                     </div>
                     <div className="configure-squad-formation-tatics">
-                      <FormControl
+                      {/* <FormControl
                         variant="outlined"
                         className={classes.formControl}
                       >
@@ -308,7 +269,13 @@ export default function ManageTeam( { match } ) {
                           <option value={"4-4-2"}>{"4-4-2"}</option>
                           <option value={"3-5-2"}>{"3-5-2"}</option>
                         </Select>
-                      </FormControl>
+                      </FormControl> */}
+                      <select name="formation" {...register('formation')} disabled={!!match.params.id}>
+                        <option defaultValue={""}>{""}</option>
+                        <option value={"3-4-3"}>{"3-4-3"}</option>
+                        <option value={"4-4-2"}>{"4-4-2"}</option>
+                        <option value={"3-5-2"}>{"3-5-2"}</option>
+                    </select>
                     </div>
                   </div>
                   <div className="configure-squad-field">
