@@ -122,12 +122,13 @@ export default function ManageTeam( { match } ) {
   }, []);
 
   const onSubmit = (data) => {
-    if (data.id) {
-      console.log(data);
-    }
+    // if (data.id) {
+      
+    // }
 
     data.id = uuid();
     data.tags = teamTags;
+    console.log(data);
 
     // const localData = localStorage.getItem("teams");
     // const dataArray = JSON.parse(localData);
@@ -182,35 +183,43 @@ export default function ManageTeam( { match } ) {
                   <div>
                     <Typography className={classes.label} color={!errors.name ? "textPrimary" : "error"}>Team name</Typography>
                     <Controller
-                      render={({ field }) => <TextField {...field} />}
                       control={control}
-                      color={!errors.name ? "secondary" : "primary"}
-                      error={!!errors.name}
-                      type="text"
                       name="name"
                       value={getValues('name')}
+                      //{...register("name")}
+                      defaultValue={false}
+                      render={({ field }) => 
+                      <TextField 
                       {...register("name")}
-                      className={classes.textField}
+                      className={classes.textField} 
+                      color={!errors.name ? "secondary" : "primary"}
+                      error={!!errors.name}
                       placeholder="Insert team name"
                       size="small"
                       fullWidth
-                      variant="outlined"
+                      variant="outlined" 
+                      {...field} />}
                     />
                   </div>
                   <div>
                     <Typography className={classes.label}>Description</Typography>
+                    <Controller 
+                    control={control}   
+                    name="description"
+                    value={getValues('description')}
+                    defaultValue={false}
+                    render={({ field }) =>
                     <TextField
-                      color={"secondary"}
-                      name="description"
-                      value={getValues('description')}
-                      {...register("description")}
-                      className={classes.textArea}
-                      placeholder="Insert description"
-                      multiline
-                      minRows={13}
-                      maxRows={13}
-                      fullWidth
+                    {...register("description")}
+                    color={"secondary"}
+                    className={classes.textArea}
+                    placeholder="Insert description"
+                    multiline={true}
+                    minRows={13}
+                       maxRows={13}
+                       fullWidth
                       variant="outlined"
+                      {...field} />}
                     />
                   </div>
                 </section>
