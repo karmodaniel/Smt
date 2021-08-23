@@ -6,7 +6,7 @@ import ChipInput from "material-ui-chip-input";
 import field from "../../assets/img/field-vertical.svg";
 import { v4 as uuid } from "uuid";
 import { useHistory } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
@@ -110,9 +110,16 @@ export default function ManageTeam( { match } ) {
   const classes = useStyles();
   const history = useHistory();
   const [teamTags, setTeamTags] = useState([]);
-
+  const [teamData, setTeamData ] = useState({
+          name: '',
+          website: '',
+          description: '',
+          type: 'fantasy',
+          tags: [],
+          formation: ''
+  });
   const {
-    register, formState: { errors }, handleSubmit, setValue, getValues, control} = useForm({
+    register, formState: { errors }, handleSubmit} = useForm({
     resolver: yupResolver(schema),
   });
 
@@ -122,19 +129,18 @@ export default function ManageTeam( { match } ) {
   }, []);
 
   const onSubmit = (data) => {
-    // if (data.id) {
-      
-    // }
+    if (data.id) {
+      findTeam(data.id);
+    }
 
     data.id = uuid();
     data.tags = teamTags;
-    console.log(data);
 
-    // const localData = localStorage.getItem("teams");
-    // const dataArray = JSON.parse(localData);
+    const localData = localStorage.getItem("teams");
+    const dataArray = JSON.parse(localData);
 
-    // dataArray.push(data);
-    // localStorage.setItem("teams", JSON.stringify(dataArray));
+    dataArray.push(data);
+    localStorage.setItem("teams", JSON.stringify(dataArray));
     history.push("/");
   };
 
@@ -145,18 +151,21 @@ export default function ManageTeam( { match } ) {
     dataArray.forEach((team) => {
       if (team.id === id) {
         console.log(team);
-         setValue('name', team.name);
-         setValue('website', team.website);
-         setValue('description', team.description);
-         setValue('type', team.type);
-         setValue('tags', team.tags);
-         setValue('formation', team.formation);
+        setTeamData((teamData) => ({
+          ...teamData, 
+          name: team.name,
+          website: team.website,
+          description: team.description,
+          type: team.type,
+          tags: team.tags,
+          formation: team.formation
+        }));
       } else {
         history.push('/');
       }
     });
 
-    return false;
+    return teamData;
     // setTeams(removedArray);
     // localStorage.setItem('teams', JSON.stringify(removedArray));
   }
@@ -182,44 +191,34 @@ export default function ManageTeam( { match } ) {
                 <section className="team-information-left">
                   <div>
                     <Typography className={classes.label} color={!errors.name ? "textPrimary" : "error"}>Team name</Typography>
-                    <Controller
-                      control={control}
-                      name="name"
-                      value={getValues('name')}
-                      //{...register("name")}
-                      defaultValue={false}
-                      render={({ field }) => 
-                      <TextField 
-                      {...register("name")}
-                      className={classes.textField} 
+                    <TextField
                       color={!errors.name ? "secondary" : "primary"}
                       error={!!errors.name}
+                      type="text"
+                      name="name"
+                      value={teamData.name}
+                      {...register("name")}
+                      className={classes.textField}
                       placeholder="Insert team name"
                       size="small"
                       fullWidth
-                      variant="outlined" 
-                      {...field} />}
+                      variant="outlined"
                     />
                   </div>
                   <div>
                     <Typography className={classes.label}>Description</Typography>
-                    <Controller 
-                    control={control}   
-                    name="description"
-                    value={getValues('description')}
-                    defaultValue={false}
-                    render={({ field }) =>
                     <TextField
-                    {...register("description")}
-                    color={"secondary"}
-                    className={classes.textArea}
-                    placeholder="Insert description"
-                    multiline={true}
-                    minRows={13}
-                       maxRows={13}
-                       fullWidth
+                      color={"secondary"}
+                      name="description"
+                      value={teamData.description}
+                      {...register("description")}
+                      className={classes.textArea}
+                      placeholder="Insert description"
+                      multiline
+                      minRows={13}
+                      maxRows={13}
+                      fullWidth
                       variant="outlined"
-                      {...field} />}
                     />
                   </div>
                 </section>
@@ -229,7 +228,7 @@ export default function ManageTeam( { match } ) {
                     <TextField
                       color={!errors.name ? "secondary" : "primary"}
                       error={!!errors.website}
-                      //value={teamData.website}
+                      value={teamData.website}
                       name="website"
                       {...register("website")}
                       className={classes.textField}
@@ -244,7 +243,7 @@ export default function ManageTeam( { match } ) {
                     <FormControl component="fieldset">
                       <RadioGroup
                         name="type"
-                        //value={teamData.type}
+                        value={teamData.type}
                         {...register("type")}
                         className={classes.radio}
                       >
@@ -266,7 +265,7 @@ export default function ManageTeam( { match } ) {
                     <StyleChipInput
                       id="tags"
                       name="tags"
-                      //value={teamData.tags}
+                      value={teamData.tags}
                       onChange={(chips) => handleTags(chips)}
                       disableUnderline={true}
                       newChipKeys={["Enter", ";"]}
@@ -298,7 +297,7 @@ export default function ManageTeam( { match } ) {
                         <Select
                           color={!errors.formation ? "secondary" : "primary"}
                           error={!!errors.formation}
-                          //value={teamData.formation}
+                          value={teamData.formation}
                           native
                           className={classes.select}
                           {...register("formation")}
