@@ -15,13 +15,11 @@ import {
   ThemeProvider,
   Button,
   withStyles,
-  TextField,
-  Typography,
 } from "@material-ui/core";
 
 const StyleChipInput = withStyles({
   root: {
-    border: "1px solid #DADADA",
+    border: "1px solid #A3A3A3",
     padding: 15,
     borderRadius: 5,
     marginTop: 10,
@@ -29,9 +27,8 @@ const StyleChipInput = withStyles({
     width: "100%",
     cursor: "text",
     "&:active, &:hover": {
-      border: "none",
+      border: "1px solid #333333",
       borderRadius: 5,
-      boxShadow: "0 0 0 1px grey",
       outline: "none",
       transition: ".1s",
     },
@@ -42,34 +39,16 @@ const StyleChipInput = withStyles({
   },
 })(ChipInput);
 
-const useStyles = makeStyles((theme) => ({
-  textField: {
-    marginTop: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 600,
-  },
-  textArea: {
-    marginTop: 10,
-  },
-  radio: {
-    display: "block",
-  },
-  select: {
-    height: 40,
-    width: 200,
-    transition: "all 0.6s ease",
-
-    [theme.breakpoints.down("xs")]: {
-      width: 145,
-    },
-  },
+const useStyles = makeStyles(() => ({
   button: {
+    height: 50,
     background: "linear-gradient(0deg, #852f7f 48%, #93337e 83%)",
+    fontSize: 20,
     fontWeight: 700,
     textTransform: "capitalize",
     color: "#ffffff",
+    marginTop: 10,
+    marginBottom: 20,
   },
 }));
 
@@ -90,19 +69,21 @@ const schema = yup.object().shape({
 });
 
 export default function ManageTeam({ match }) {
-  const classes = useStyles();
-  const history = useHistory();
-  const [teamTags, setTeamTags] = useState([]);
-  const [validId, setValidId] = useState("");
-
   const {
     register,
     formState: { errors },
     handleSubmit,
     setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const classes = useStyles();
+  const history = useHistory();
+  const [teamTags, setTeamTags] = useState([]);
+  const [validId, setValidId] = useState("");
+  const watchType = watch(["type"]);
 
   useEffect(() => {
     cleanFields();
@@ -118,7 +99,6 @@ export default function ManageTeam({ match }) {
     } else {
       data.id = uuid();
       data.tags = teamTags;
-      console.log("data", data);
 
       const localData = localStorage.getItem("teams");
       const dataArray = JSON.parse(localData);
@@ -137,7 +117,6 @@ export default function ManageTeam({ match }) {
 
   const validateId = (id) => {
     const validTeam = findTeam(id);
-    console.log(validTeam);
     if (validTeam) {
       preloadTeam(validTeam);
     } else {
@@ -161,7 +140,6 @@ export default function ManageTeam({ match }) {
 
   const updateTeam = (team) => {
     const data = getAll();
-    console.log(team);
     data.forEach((teamData, index) => {
       if (teamData.id === validId) {
         team.id = validId;
@@ -186,6 +164,16 @@ export default function ManageTeam({ match }) {
     return false;
   };
 
+  const checkColor = (error) => {
+    const color = "select-disabled";
+    if (!!match.params.id) {
+      return color;
+    } else if (errors.formation) {
+      return "label-error";
+    }
+    return color;
+  };
+
   const handleTags = (tags) => {
     setTeamTags(tags);
   };
@@ -206,12 +194,9 @@ export default function ManageTeam({ match }) {
               <section className="team-information-wrapper">
                 <section className="team-information-left">
                   <div>
-                    <Typography
-                      className={classes.label}
-                      color={!errors.name ? "textPrimary" : "error"}
-                    >
+                    <h4 className={`${errors.name ? "label-error" : ""}`}>
                       Team name
-                    </Typography>
+                    </h4>
                     <input
                       name="name"
                       type="text"
@@ -221,9 +206,7 @@ export default function ManageTeam({ match }) {
                     ></input>
                   </div>
                   <div>
-                    <Typography className={classes.label}>
-                      Description
-                    </Typography>
+                    <h4>Description</h4>
                     <textarea
                       name="description"
                       className="description"
@@ -236,12 +219,9 @@ export default function ManageTeam({ match }) {
                 </section>
                 <section className="team-information-right">
                   <div className="team-website">
-                    <Typography
-                      className={classes.label}
-                      color={!errors.website ? "textPrimary" : "error"}
-                    >
+                    <h4 className={`${errors.website ? "label-error" : ""}`}>
                       Team website
-                    </Typography>
+                    </h4>
                     <input
                       name="website"
                       type="text"
@@ -251,34 +231,54 @@ export default function ManageTeam({ match }) {
                     ></input>
                   </div>
                   <div className="team-type">
-                    <Typography
-                      className={classes.label}
-                      color={!errors.type ? "textPrimary" : "error"}
-                    >
+                    <h4 className={`${errors.type ? "label-error" : ""}`}>
                       Team type
-                    </Typography>
-                    <div>
-                      <label htmlFor="real">Real</label>
-                      <input
-                        {...register("type")}
-                        type="radio"
-                        id="real"
-                        name="type"
-                        value="real"
-                      ></input>
+                    </h4>
+                    <div className="radio-content">
+                      <label htmlFor="real" className="radio-container">
+                        <input
+                          {...register("type")}
+                          type="radio"
+                          id="real"
+                          name="type"
+                          value="real"
+                        ></input>
+                        <p
+                          className={
+                            watchType.toString() === "real"
+                              ? "label-red"
+                              : "label-gray"
+                          }
+                        >
+                          {" "}
+                          Real{" "}
+                        </p>
+                        <span className="checkmark"></span>
+                      </label>
 
-                      <label htmlFor="fantasy">Fantasy</label>
-                      <input
-                        {...register("type")}
-                        type="radio"
-                        id="fantasy"
-                        name="type"
-                        value="fantasy"
-                      ></input>
+                      <label htmlFor="fantasy" className="radio-container">
+                        <p
+                          className={
+                            watchType.toString() === "fantasy"
+                              ? "label-red"
+                              : "label-gray"
+                          }
+                        >
+                          Fantasy
+                        </p>
+                        <input
+                          {...register("type")}
+                          type="radio"
+                          id="fantasy"
+                          name="type"
+                          value="fantasy"
+                        ></input>
+                        <span className="checkmark"></span>
+                      </label>
                     </div>
                   </div>
                   <div>
-                    <Typography className={classes.label}>Tags</Typography>
+                    <h4>Tags</h4>
                     <StyleChipInput
                       id="tags"
                       name="tags"
@@ -300,15 +300,14 @@ export default function ManageTeam({ match }) {
                 <section className="configure-squad-left">
                   <div className="configure-squad-formation">
                     <div className="configure-squad-formation-title">
-                      <Typography
-                        className={classes.label}
-                        color={!errors.formation ? "textPrimary" : "error"}
-                      >
-                        Formation
-                      </Typography>
+                      <h4 className={checkColor()}>Formation</h4>
                     </div>
                     <div className="configure-squad-formation-tatics">
-                      <select name="formation" {...register("formation")}>
+                      <select
+                        className="custom-select"
+                        name="formation"
+                        {...register("formation")}
+                      >
                         {/* disabled={!!match.params.id} */}
                         <option value={""}>{""}</option>
                         <option value={"3-4-3"}>{"3-4-3"}</option>
@@ -327,6 +326,9 @@ export default function ManageTeam({ match }) {
                         variant="contained"
                         type="submit"
                         fullWidth
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
                       >
                         Save
                       </Button>
@@ -335,18 +337,16 @@ export default function ManageTeam({ match }) {
                 </section>
                 <section className="configure-squad-right">
                   <div>
-                    <Typography className={classes.label}>
-                      Search Players
-                    </Typography>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      className={classes.textField}
+                    <h4>Search Players</h4>
+                    <input
+                      name="search"
+                      type="text"
+                      className={`input ${errors.textField ? "error" : ""}`}
                       placeholder="Enter your text"
-                      fullWidth
-                    />
+                      {...register("search")}
+                    ></input>
                   </div>
-                  <div>search content</div>
+                  <div></div>
                 </section>
               </section>
             </section>
