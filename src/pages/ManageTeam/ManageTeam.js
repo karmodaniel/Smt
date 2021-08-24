@@ -6,7 +6,7 @@ import ChipInput from "material-ui-chip-input";
 import field from "../../assets/img/field-vertical.svg";
 import { v4 as uuid } from "uuid";
 import { useHistory } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
@@ -15,17 +15,9 @@ import {
   ThemeProvider,
   Button,
   withStyles,
-  Select,
-  InputLabel,
-  FormControlLabel,
-  FormControl,
-  RadioGroup,
-  Radio,
   TextField,
-  Typography 
+  Typography,
 } from "@material-ui/core";
-import { ErrorSharp } from "@material-ui/icons";
-
 
 const StyleChipInput = withStyles({
   root: {
@@ -50,23 +42,13 @@ const StyleChipInput = withStyles({
   },
 })(ChipInput);
 
-const StyleRadio = withStyles({
-  root: {
-    color: "#8D8D8D",
-    "&$checked": {
-      color: "#A0387E",
-    },
-  },
-  checked: {},
-})((props) => <Radio color="default" {...props} />);
-
 const useStyles = makeStyles((theme) => ({
   textField: {
     marginTop: 10,
   },
   label: {
     fontSize: 16,
-    fontWeight: 600
+    fontWeight: 600,
   },
   textArea: {
     marginTop: 10,
@@ -107,58 +89,102 @@ const schema = yup.object().shape({
   formation: yup.string().required().ensure().trim(),
 });
 
-export default function ManageTeam( { match } ) {
+export default function ManageTeam({ match }) {
   const classes = useStyles();
   const history = useHistory();
   const [teamTags, setTeamTags] = useState([]);
+  const [validId, setValidId] = useState("");
 
   const {
-    register, formState: { errors }, handleSubmit, setValue, getValues, control} = useForm({
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+  } = useForm({
     resolver: yupResolver(schema),
   });
 
   useEffect(() => {
     cleanFields();
-    findTeam(match.params.id);
-  }, []);
+    if (match.params.id) {
+      validateId(match.params.id);
+    }
+  }, [match.params.id]);
 
   const onSubmit = (data) => {
-    // if (data.id) {
-      
-    // }
+    if (validId) {
+      updateTeam(data);
+      history.push("/");
+    } else {
+      data.id = uuid();
+      data.tags = teamTags;
+      console.log("data", data);
 
-    data.id = uuid();
-    data.tags = teamTags;
-    console.log(data);
+      const localData = localStorage.getItem("teams");
+      const dataArray = JSON.parse(localData);
 
-    // const localData = localStorage.getItem("teams");
-    // const dataArray = JSON.parse(localData);
+      dataArray.push(data);
+      localStorage.setItem("teams", JSON.stringify(dataArray));
+      history.push("/");
+    }
+  };
+  const getAll = () => {
+    const data = localStorage.getItem("teams");
+    const dataArray = JSON.parse(data);
 
-    // dataArray.push(data);
-    // localStorage.setItem("teams", JSON.stringify(dataArray));
-    history.push("/");
+    return dataArray;
+  };
+
+  const validateId = (id) => {
+    const validTeam = findTeam(id);
+    console.log(validTeam);
+    if (validTeam) {
+      preloadTeam(validTeam);
+    } else {
+      history.push("/");
+    }
   };
 
   const findTeam = (id) => {
-    const data = localStorage.getItem('teams');
-    const dataArray = JSON.parse(data);
+    const data = getAll();
 
-    dataArray.forEach((team) => {
+    let teamFinded = null;
+    data.forEach((team) => {
       if (team.id === id) {
-        console.log(team);
-         setValue('name', team.name);
-         setValue('website', team.website);
-         setValue('description', team.description);
-         setValue('type', team.type);
-         setTeamTags(team.tags);
-         setValue('formation', team.formation);
-      } 
+        teamFinded = team;
+        return;
+      }
     });
 
+    return teamFinded;
+  };
+
+  const updateTeam = (team) => {
+    const data = getAll();
+    console.log(team);
+    data.forEach((teamData, index) => {
+      if (teamData.id === validId) {
+        team.id = validId;
+        team.tags = teamTags;
+        data[index] = team;
+      }
+    });
+
+    localStorage.setItem("teams", JSON.stringify(data));
+    return data;
+  };
+
+  const preloadTeam = (team) => {
+    setValue("name", team.name);
+    setValue("website", team.website);
+    setValue("description", team.description);
+    setValue("type", team.type);
+    setTeamTags(team.tags);
+    setValidId(team.id);
+    setValue("formation", team.formation);
+
     return false;
-    // setTeams(removedArray);
-    // localStorage.setItem('teams', JSON.stringify(removedArray));
-  }
+  };
 
   const handleTags = (tags) => {
     setTeamTags(tags);
@@ -180,46 +206,75 @@ export default function ManageTeam( { match } ) {
               <section className="team-information-wrapper">
                 <section className="team-information-left">
                   <div>
-                    <Typography className={classes.label} color={!errors.name ? "textPrimary" : "error"}>Team name</Typography>
-                    <input name="name" type="text" className={`input ${errors.name ? "error" : "" }`  } placeholder="Insert team name" {...register("name")} ></input>
+                    <Typography
+                      className={classes.label}
+                      color={!errors.name ? "textPrimary" : "error"}
+                    >
+                      Team name
+                    </Typography>
+                    <input
+                      name="name"
+                      type="text"
+                      className={`input ${errors.name ? "error" : ""}`}
+                      placeholder="Insert team name"
+                      {...register("name")}
+                    ></input>
                   </div>
                   <div>
-                    <Typography className={classes.label}>Description</Typography>
-                    <textarea name="description" className="description" rows={13}  type="text" {...register("description")} placeholder="Insert description"></textarea>
+                    <Typography className={classes.label}>
+                      Description
+                    </Typography>
+                    <textarea
+                      name="description"
+                      className="description"
+                      rows={13}
+                      type="text"
+                      {...register("description")}
+                      placeholder="Insert description"
+                    ></textarea>
                   </div>
                 </section>
                 <section className="team-information-right">
                   <div className="team-website">
-                    <Typography className={classes.label} color={!errors.website ? "textPrimary" : "error"}>Team website</Typography>
-                    <input name="website" type="text" className={`input ${errors.website ? "error" : "" }`} {...register("website")} placeholder="http://myteam.com"></input>
+                    <Typography
+                      className={classes.label}
+                      color={!errors.website ? "textPrimary" : "error"}
+                    >
+                      Team website
+                    </Typography>
+                    <input
+                      name="website"
+                      type="text"
+                      className={`input ${errors.website ? "error" : ""}`}
+                      {...register("website")}
+                      placeholder="http://myteam.com"
+                    ></input>
                   </div>
                   <div className="team-type">
-                    <Typography className={classes.label} color={!errors.type ? "textPrimary" : "error"}>Team type</Typography>
-                    {/* <FormControl component="fieldset">
-                      <RadioGroup
-                        name="type"
-                        //value={teamData.type}
-                        {...register("type")}
-                        className={classes.radio}
-                      >
-                        <FormControlLabel
-                          value="real"
-                          control={<StyleRadio />}
-                          label="Real"
-                        />
-                        <FormControlLabel
-                          value="fantasy"
-                          control={<StyleRadio />}
-                          label="Fantasy"
-                        />
-                      </RadioGroup>
-                    </FormControl> */}
+                    <Typography
+                      className={classes.label}
+                      color={!errors.type ? "textPrimary" : "error"}
+                    >
+                      Team type
+                    </Typography>
                     <div>
-                          <label htmlFor="real">Real</label>
-                      <input {...register("type")} type="radio" id="real" name="type" value="real"></input>
+                      <label htmlFor="real">Real</label>
+                      <input
+                        {...register("type")}
+                        type="radio"
+                        id="real"
+                        name="type"
+                        value="real"
+                      ></input>
 
-                          <label htmlFor="fantasy">Fantasy</label>
-                          <input {...register("type")} type="radio" id="fantasy" name="type" value="fantasy"></input>
+                      <label htmlFor="fantasy">Fantasy</label>
+                      <input
+                        {...register("type")}
+                        type="radio"
+                        id="fantasy"
+                        name="type"
+                        value="fantasy"
+                      ></input>
                     </div>
                   </div>
                   <div>
@@ -245,37 +300,21 @@ export default function ManageTeam( { match } ) {
                 <section className="configure-squad-left">
                   <div className="configure-squad-formation">
                     <div className="configure-squad-formation-title">
-                    <Typography className={classes.label} color={!errors.formation ? "textPrimary" : "error"}>Formation</Typography>
+                      <Typography
+                        className={classes.label}
+                        color={!errors.formation ? "textPrimary" : "error"}
+                      >
+                        Formation
+                      </Typography>
                     </div>
                     <div className="configure-squad-formation-tatics">
-                      {/* <FormControl
-                        variant="outlined"
-                        className={classes.formControl}
-                      >
-                        <InputLabel
-                          shrink={true}
-                          htmlFor="outlined-age-native-simple"
-                        ></InputLabel>
-                        <Select
-                          color={!errors.formation ? "secondary" : "primary"}
-                          error={!!errors.formation}
-                          //value={teamData.formation}
-                          native
-                          className={classes.select}
-                          {...register("formation")}
-                        >
-                          <option aria-label={""} value={""} />
-                          <option value={"3-4-3"}>{"3-4-3"}</option>
-                          <option value={"4-4-2"}>{"4-4-2"}</option>
-                          <option value={"3-5-2"}>{"3-5-2"}</option>
-                        </Select>
-                      </FormControl> */}
-                      <select name="formation" {...register('formation')} disabled={!!match.params.id}>
-                        <option defaultValue={""}>{""}</option>
+                      <select name="formation" {...register("formation")}>
+                        {/* disabled={!!match.params.id} */}
+                        <option value={""}>{""}</option>
                         <option value={"3-4-3"}>{"3-4-3"}</option>
                         <option value={"4-4-2"}>{"4-4-2"}</option>
                         <option value={"3-5-2"}>{"3-5-2"}</option>
-                    </select>
+                      </select>
                     </div>
                   </div>
                   <div className="configure-squad-field">
@@ -296,7 +335,9 @@ export default function ManageTeam( { match } ) {
                 </section>
                 <section className="configure-squad-right">
                   <div>
-                    <Typography className={classes.label}>Search Players</Typography>
+                    <Typography className={classes.label}>
+                      Search Players
+                    </Typography>
                     <TextField
                       variant="outlined"
                       size="small"
