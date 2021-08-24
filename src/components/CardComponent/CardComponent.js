@@ -13,9 +13,10 @@ import {
 } from "@material-ui/core";
 
 export default function CardComponent(props) {
-  const useStyles = makeStyles({
+  const useStyles = makeStyles( {
     card: {
       borderRadius: 14,
+      height: '100%'
     },
     cardHeader: {
       paddingLeft: 30,

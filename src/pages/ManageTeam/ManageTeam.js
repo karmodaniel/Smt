@@ -39,34 +39,16 @@ const StyleChipInput = withStyles({
   },
 })(ChipInput);
 
-const useStyles = makeStyles((theme) => ({
-  textField: {
-    marginTop: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 600,
-  },
-  textArea: {
-    marginTop: 10,
-  },
-  radio: {
-    display: "block",
-  },
-  select: {
-    height: 40,
-    width: 200,
-    transition: "all 0.6s ease",
-
-    [theme.breakpoints.down("xs")]: {
-      width: 145,
-    },
-  },
+const useStyles = makeStyles(() => ({
   button: {
+    height: 50,
     background: "linear-gradient(0deg, #852f7f 48%, #93337e 83%)",
+    fontSize: 20,
     fontWeight: 700,
     textTransform: "capitalize",
     color: "#ffffff",
+    marginTop: 10,
+    marginBottom: 20,
   },
 }));
 
@@ -117,7 +99,6 @@ export default function ManageTeam({ match }) {
     } else {
       data.id = uuid();
       data.tags = teamTags;
-      console.log("data", data);
 
       const localData = localStorage.getItem("teams");
       const dataArray = JSON.parse(localData);
@@ -136,7 +117,6 @@ export default function ManageTeam({ match }) {
 
   const validateId = (id) => {
     const validTeam = findTeam(id);
-    console.log(validTeam);
     if (validTeam) {
       preloadTeam(validTeam);
     } else {
@@ -160,7 +140,6 @@ export default function ManageTeam({ match }) {
 
   const updateTeam = (team) => {
     const data = getAll();
-    console.log(team);
     data.forEach((teamData, index) => {
       if (teamData.id === validId) {
         team.id = validId;
@@ -257,13 +236,36 @@ export default function ManageTeam({ match }) {
                     </h4>
                     <div className="radio-content">
                       <label htmlFor="real" className="radio-container">
-                        <input {...register("type")} type="radio" id="real" name="type" value="real"></input> 
-                        <p className={ watchType.toString() === "real"? "label-red": "label-gray"}> Real </p>
+                        <input
+                          {...register("type")}
+                          type="radio"
+                          id="real"
+                          name="type"
+                          value="real"
+                        ></input>
+                        <p
+                          className={
+                            watchType.toString() === "real"
+                              ? "label-red"
+                              : "label-gray"
+                          }
+                        >
+                          {" "}
+                          Real{" "}
+                        </p>
                         <span className="checkmark"></span>
-                        </label>
+                      </label>
 
                       <label htmlFor="fantasy" className="radio-container">
-                        <p className={watchType.toString() === "fantasy"? "label-red": "label-gray"}>Fantasy</p>
+                        <p
+                          className={
+                            watchType.toString() === "fantasy"
+                              ? "label-red"
+                              : "label-gray"
+                          }
+                        >
+                          Fantasy
+                        </p>
                         <input
                           {...register("type")}
                           type="radio"
@@ -324,6 +326,9 @@ export default function ManageTeam({ match }) {
                         variant="contained"
                         type="submit"
                         fullWidth
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
                       >
                         Save
                       </Button>
@@ -341,7 +346,7 @@ export default function ManageTeam({ match }) {
                       {...register("search")}
                     ></input>
                   </div>
-                  <div>search content</div>
+                  <div></div>
                 </section>
               </section>
             </section>

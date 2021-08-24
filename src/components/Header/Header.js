@@ -23,7 +23,7 @@ export default function Header() {
             <img src={logo} alt="Venturus logo" className="logo"></img>
           </div>
           <div className="app-name">
-            <h1>Squand Management Tool</h1>
+            <h1>Squad Management Tool</h1>
           </div>
         </section>
         <section className="user-info">
