@@ -4,6 +4,7 @@
   display: flex;
   justify-content: space-around;
   padding: 40px 20px 0px 20px;
+  min-height: calc(100vh - 110px);
 
   .card {
     width: 46%;
@@ -12,6 +13,7 @@
   .statistics-container {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 
     .tops {
       width: 100%;
@@ -32,7 +34,7 @@
       justify-content: space-around;
       align-items: center;
       width: 100%;
-      min-height: 330px;
+      min-height: 260px;
       margin-top: 30px;
       background-image: url(../../assets/img/field-horizontal.svg);
       background-repeat: no-repeat;
@@ -46,10 +48,7 @@
         height: 250px;
         display: flex;
         align-items: center;
-      }
-
-      .less-picked {
-        padding-bottom: 10px;
+        justify-content: center;
       }
     }
   }

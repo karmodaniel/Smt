@@ -13,7 +13,7 @@ export default function Ranking(props) {
       <h2 className="ranking-title">{props.title}</h2>
       <section className="ranking-container">
         { teams.lenght !== 0 && teams.map((team) => (
-          <ul className={"ranking " + findBiggestValue(team.age)}>
+          <ul key={team.age} className={"ranking " + findBiggestValue(team.age)}>
             <li className="ranking-item ">
               <span className="ranking-team">{team.name}</span>
               <span className="ranking-avg">{team.age}</span>

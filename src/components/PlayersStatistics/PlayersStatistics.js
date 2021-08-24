@@ -7,7 +7,7 @@ export default function PlayersStatistics(props) {
 
   useEffect(() => {
     isDotted();
-  }, [props]);
+  });
 
   const isDotted = () => {
     if (props.dotted) {
@@ -20,27 +20,34 @@ export default function PlayersStatistics(props) {
     return;
   };
 
+  const userInitials = (name) => {
+    const username = name.split([" "]);
+    const initials = username[0][0] + username[1][0];
+    return initials;
+  };
+
   return (
-    <section className="data-container">
+    <section>
       {showDotted && (
         <div className="player-container">
-          <div className="player"></div>
-          <div className="dots">
-            <div className="percent">
-              <h1>72%</h1>
-              <div className="dash"></div>
+           <h1>Most picked player</h1>
+           <div className="player-content">
+            <div className="most-player">
+              <div className="user-initials">{userInitials(props.name)}</div>
             </div>
-          </div>
+            <h2>{props.percent}%<div className="dash"></div></h2>
+           </div>
         </div>
       )}
 
       {showNotDotted && (
         <div className="player-container">
-          <div className="player-not-dotted">
-            <div className="percent-not-dotted">
-              <h1>72%</h1>
-              <div className="dash-not-dotted"></div>
+          <h1>Less picked player</h1>
+          <div className="player-content">
+            <div>
+              <div className="user-initials">{userInitials(props.name)}</div>
             </div>
+            <h2>{props.percent}%<div className="dash"></div></h2>
           </div>
         </div>
       )}

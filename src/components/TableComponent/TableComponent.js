@@ -11,18 +11,25 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
+import ShareIcon from '@material-ui/icons/Share';
+import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from 'react-router-dom';
 
 export default function TableComponent(props) {
   const [teams, setTeams] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     setTeams(props.teams);
-  }, [props]);
+  }, [props.teams]);
 
   const StyledTableCell = withStyles(() => ({
     head: {
       backgroundColor: "$white",
       color: "$black",
+      fontSize: 18,
+      fontWeight: 600,
 
       "&:nth-of-type(1)": {
         width: "30%",
@@ -41,7 +48,8 @@ export default function TableComponent(props) {
       },
     },
     body: {
-      fontSize: 14,
+      fontSize: 18,
+      fontWeight: 600
     },
   }))(TableCell);
 
@@ -64,7 +72,7 @@ export default function TableComponent(props) {
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
       },
-      "&:hover td": {
+      "&:hover td:nth-of-type(2)": {
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
       },
@@ -74,7 +82,29 @@ export default function TableComponent(props) {
       justifyContent: "center",
       marginTop: 20,
     },
+    icon: {
+      marginLeft: 10
+    }
   });
+
+  const handleDelete = (id) => {
+    const data = localStorage.getItem('teams');
+    const dataArray = JSON.parse(data);
+
+    const removedArray = [];
+    dataArray.forEach((team) => {
+      if (team.id !== id) {
+        removedArray.push(team);
+      }
+    });
+
+    setTeams(removedArray);
+    localStorage.setItem('teams', JSON.stringify(removedArray));
+  }
+
+  const handleEdit = (id) => {
+    history.push(`/manage-team/${id}`);
+  }
 
   const classes = useStyles();
   return (
@@ -85,6 +115,7 @@ export default function TableComponent(props) {
             <TableRow>
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell align="left">Description</StyledTableCell>
+              <StyledTableCell align="right" ></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -93,13 +124,19 @@ export default function TableComponent(props) {
                 <StyledTableRow
                   hover
                   className={classes.hover}
-                  key={teams.name}
+                  key={teams.id}
                 >
                   <StyledTableCell component="th" scope="row">
                     {teams.name}
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     {teams.description}
+                  </StyledTableCell>
+
+                  <StyledTableCell align="right">
+                    <DeleteIcon onClick={() => handleDelete(teams.id)} ></DeleteIcon>
+                    <ShareIcon className={classes.icon}></ShareIcon>
+                    <EditIcon onClick={() => handleEdit(teams.id)} className={classes.icon}></EditIcon>
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
