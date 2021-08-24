@@ -21,7 +21,8 @@ function App() {
             <Header />
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/manage-team" component={ManageTeam} />
+              <Route path="/manage-team" exact component={ManageTeam} />
+              <Route path="/manage-team/:id" component={ManageTeam} />
             </Switch>
           </Router>
         </div>

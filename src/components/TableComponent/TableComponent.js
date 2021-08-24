@@ -14,9 +14,11 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import ShareIcon from '@material-ui/icons/Share';
 import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from 'react-router-dom';
 
 export default function TableComponent(props) {
   const [teams, setTeams] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     setTeams(props.teams);
@@ -100,6 +102,10 @@ export default function TableComponent(props) {
     localStorage.setItem('teams', JSON.stringify(removedArray));
   }
 
+  const handleEdit = (id) => {
+    history.push(`/manage-team/${id}`);
+  }
+
   const classes = useStyles();
   return (
     <section>
@@ -130,7 +136,7 @@ export default function TableComponent(props) {
                   <StyledTableCell align="right">
                     <DeleteIcon onClick={() => handleDelete(teams.id)} ></DeleteIcon>
                     <ShareIcon className={classes.icon}></ShareIcon>
-                    <EditIcon className={classes.icon}></EditIcon>
+                    <EditIcon onClick={() => handleEdit(teams.id)} className={classes.icon}></EditIcon>
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
